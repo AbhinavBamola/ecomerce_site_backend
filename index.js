@@ -23,8 +23,9 @@ app.use(express.urlencoded({extended:true}))
 app.use(checkifuserissignedin);
 
 
-app.get('/api/me',(req,res)=>{
-    res.json(req.user);
+app.get('/api/me',checkifuserissignedin,(req,res)=>{
+    console.log("User fetch request "+req.user);
+    res.json(req.user||{});
 })
 app.use('/user',userRouter);
 

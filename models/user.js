@@ -41,9 +41,11 @@ userSchema.pre('save',async function(next) {
     next();
 })
 
-userSchema.methods.comparePasswords= async(enteredPassword)=> {
+userSchema.methods.comparePasswords= async function(enteredPassword) {
+    console.log(this.password);
+    console.log(enteredPassword)
     return await bcrypt.compare(enteredPassword,this.password);
 }
-
+ 
  const userModel=model("ecomerceUser",userSchema);
  module.exports=userModel;

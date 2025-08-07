@@ -9,13 +9,15 @@ async function handlesignin(req,res) {
     }
     if(await user.comparePasswords(password)){
         const token=createToken(user);
+        console.log(token);
         res.cookie("token",token,{
             httpOnly:true,
             secure:false,
-            sameSite:"none"
+            sameSite:"lax"
         }).json({success:"User signed in success fully"});
     }
-    res.json({error:"Wrong password"})
+    else{
+    res.json({error:"Wrong password"})}
 }
 
 async function handlesignup(req,res) {
@@ -29,7 +31,7 @@ async function handlesignup(req,res) {
     res.cookie("token",token,{
         httpOnly:true,
         secure:false,
-        sameSite:"none"
+        sameSite:"lax"
     })
     res.json({success:"User created successfully"});
 }
