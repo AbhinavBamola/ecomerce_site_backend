@@ -6,6 +6,7 @@ const cookieparser=require('cookie-parser');
 const { applyTimestamps } = require('./models/user.js');
 const cors=require('cors');
 const {checkifuserissignedin}=require('./authentication/authentication.js');
+const productRouter=require('./route/product.js');
 
 
 const PORT=process.env.PORT;
@@ -28,6 +29,7 @@ app.get('/api/me',checkifuserissignedin,(req,res)=>{
     res.json(req.user||{});
 })
 app.use('/user',userRouter);
+app.use('/product',productRouter);
 
 app.listen(PORT,()=>{
     console.log(`Server started on ${PORT}`);
