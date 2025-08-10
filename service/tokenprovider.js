@@ -6,7 +6,8 @@ function createToken(user){
         _id:user._id,
         userName:user.userName,
         email:user.email,
-        role:user.role
+        role:user.role,
+        profileImage:user.profileImage
     }
     const token= jwt.sign(payload,secret);
     return token;

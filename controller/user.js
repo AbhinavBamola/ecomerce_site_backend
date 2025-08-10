@@ -23,13 +23,15 @@ async function handlesignin(req,res) {
 
 async function handlesignup(req,res) {
     const {userName,email,password,adminkey}=req.body;
+    const profileImage=req.file?'/'+req.file.path.replace(/\\/g,'/'):'/uploads/download (1).jpeg';
     const user=await userModel.findOne({email});
     if(user){
         res.json({error:"Email already exists"});
     }
     if(adminkey==""){
-    const newuser=await userModel.create({userName,email,password});
+    const newuser=await userModel.create({userName,email,password,profileImage});
     const token=createToken(newuser);
+    console.log("ran")
     res.cookie("token",token,{
         httpOnly:true,
         secure:false,
@@ -38,8 +40,9 @@ async function handlesignup(req,res) {
     res.json({success:"User created successfully"});
 }
     else if(adminkey==adkey){
-              const newuser=await userModel.create({userName,email,password});
-              await userModel.findByIdAndUpdate(newuser._id,{role:"admin"});
+              const newuser=await userModel.create({userName,email,password,profileImage});
+                newuser.role="admin";
+               await newuser.save();
     const token=createToken(newuser);
     res.cookie("token",token,{
         httpOnly:true,
@@ -55,7 +58,11 @@ async function handlesignup(req,res) {
 
 async function handlelogout(req,res) {
     if(req.cookies.token){
-    res.clearCookie("token");
+    res.clearCookie("token",{
+        httpOnly:true,
+         secure:false,
+        sameSite:"lax"
+    });
     req.user=null;
     res.json({success:"User Logged Out Successfully"});
 }

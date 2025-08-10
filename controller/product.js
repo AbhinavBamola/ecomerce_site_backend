@@ -3,7 +3,11 @@ const { all } = require('../route/product');
 
 async function handlecreateproduct(req, res) {
     try{
-    const { productName, description, price, category, stock, imageUrl } = req.body;
+        if(!req.file){
+            throw new Error;
+        }
+    const { productName, description, price, category, stock } = req.body;
+    const imageUrl='/'+req.file.path.replace(/\\/g,"/");
     await productModel.create({ productName, description,
          price, category, 
          stock, imageUrl })
@@ -27,7 +31,8 @@ async function handledeletproduct(req,res) {
 }
 async function handleupdateproduct(req,res) {
           try{
-    const {_id, productName, description, price, category, stock, imageUrl } = req.body;
+    const {_id, productName, description, price, category, stock} = req.body;
+        const imageUrl='/'+req.file.path.replace(/\\/g,"/");
     await productModel.findByIdAndUpdate(_id,{ productName, description,
          price, category, 
          stock, imageUrl })
@@ -43,7 +48,7 @@ async function handlegetallproducts(req,res) {
         const allproducts=await productModel.find({})
         res.products=allproducts;
         console.log("All products fetched")
-        res.json({success:"All products fetched"})
+        res.json(allproducts);
     }
     catch(error){
         console.log(error);

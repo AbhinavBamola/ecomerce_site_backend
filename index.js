@@ -7,6 +7,7 @@ const { applyTimestamps } = require('./models/user.js');
 const cors=require('cors');
 const {checkifuserissignedin}=require('./authentication/authentication.js');
 const productRouter=require('./route/product.js');
+const path=require('path')
 
 
 const PORT=process.env.PORT;
@@ -21,9 +22,18 @@ app.use(cors({
 app.use(cookieparser());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
+
+app.use((req, res, next) => {
+  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+  next();
+});
+app.use('/uploads',express.static(path.resolve('uploads'),{
+    setHeaders:(res,filePath)=>{
+        res.setHeader('Access-Control-Allow-Origin','*')
+    }
+}))
+
 app.use(checkifuserissignedin);
-
-
 app.get('/api/me',checkifuserissignedin,(req,res)=>{
     console.log("User fetch request "+req.user);
     res.json(req.user||{});
